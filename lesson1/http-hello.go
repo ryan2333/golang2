@@ -6,8 +6,9 @@ import (
 )
 
 func handle(w http.ResponseWriter, r *http.Request){
+	r.ParseForm()
 	fmt.Fprintf(w, "Hello, world!\n")
-	fmt.Fprintf(w, "hello %s, Path: %s\n", r.URL,r.URL.Path)
+	fmt.Fprintf(w, "hello %s, Path: %s\n", r.Form.Get("user"),r.URL.Path)
 }
 
 func main(){
