@@ -3,7 +3,6 @@ package consistent
 import (
 	"fmt"
 	"hash/fnv"
-	"log"
 	"sort"
 )
 
@@ -48,7 +47,6 @@ func (c *ConsistentRing) AddNode(name string) {
 	h := fnv.New64() //取hash值
 	h.Write([]byte(name))
 	c.Buckets = append(c.Buckets, Bucket{name, uint64(h.Sum64()) % c.Range})
-	log.Println(c.Buckets)
 }
 
 // func (c ConsistentRing) AddNode(node int64) {  //单元测试数据1
@@ -68,13 +66,12 @@ func (c ConsistentRing) DumpNodesRange() ConsistentRing {
 func (c ConsistentRing) findBucketByKey(key string) Bucket {
 	h := fnv.New64()
 	h.Write([]byte(key))
-	keyHash := uinit64(h.Sum64()) % c.Range
-	bkHash := c.Buckets
-	for i := 0; i < len(bkHash); i++ {
-		if bkHash[i].Position > keyHash {
-			return bkHash[i-1]
-		} else if bkHash[i].Position < keyHash && i == len(bkHash)-1 {
-			return bkHash[len(bkHash)-1]
-		}
-	}
+	keyHash := uint64(h.Sum64()) % c.Range
+	start_bucke_idx := (sort.Search(len(c.Buckets), func(i int) bool {
+		return c.Buckets[i].Position > keyHash
+	}) + len(c.Buckets) - 1) % len(c.Buckets)
+	start := c.Buckets[start_bucke_idx].Position
+	end := c.Buckets[(start_bucke_idx+1)%len(c.Buckets)].Position
+	fmt.Printf("key: %d, start: %d, end: %d\n", keyHash, start, end)
+	return c.Buckets[start_bucke_idx]
 }

@@ -15,13 +15,18 @@ func TestSpec(t *testing.T) {
 		// 	},
 		// }
 		c := ConsistentRing{
-			Range: 100,
-			Nodes: []Node{},
+			Range:   100,
+			Buckets: []Bucket{},
 		}
 		c.AddNode("aaa")
 		c.AddNode("bbb")
 		c.AddNode("ccc")
+		c.AddNode("fffff")
 		c.DumpNodesRange()
+		c.findBucketByKey("lsdfsdfll")
+		c.findBucketByKey("gg4545gg")
+		c.findBucketByKey("lseds1slslls")
+		c.findBucketByKey("slwerytyuyuyiuikjsd;lfkjsa;d")
 		So(nil, ShouldEqual, nil)
 	})
 }
